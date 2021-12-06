@@ -1,6 +1,6 @@
 # action-approve-failure
 
-GitHub action that let's you turn failure into success. For a short while.
+GitHub action that let's you turn failure into success. For a while.
 
 ## Example
 
