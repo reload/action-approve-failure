@@ -4,6 +4,8 @@ GitHub action that let's you turn failure into success. For a while.
 
 ## Example
 
+[Example PR](https://github.com/reload/action-approve-failure/pull/1).
+
 Presume you have a couple of jobs that run on pull requests.
 (These are merely examples but take a look in `.github/workflows` for closer inspection)
 
