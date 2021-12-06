@@ -1,0 +1,39 @@
+name: Test
+
+on:
+  # https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows#issue_comment
+  # There does not exist an event specifically for PR comments which means
+  # we need to have that check further down the action definition.
+  issue_comment:
+    types: [created]
+
+jobs:
+  test:
+    # This condition is important since you want to prevent all of the steps
+    # from running as early as possible if the comment isn't in a PR.
+    if: ${{ github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: ./
+        name: Approve BackstopJS
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          check_name: BackstopJS visual test
+          approve_comment: backstop-check approve
+
+      - uses: ./
+        name: Approve ESLint
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          check_name: ESLint
+          approve_comment: eslint-check approve
+
+      # There is no step in checks.yml named Cypress which will lead this to fail.
+      - uses: ./
+        name: Approve Cypress
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          check_name: Cypress
+          approve_comment: cypress-check approve

@@ -1,0 +1,14 @@
+name: "Approve failure"
+description: "Approve any check no matter it's actual conclusion."
+inputs:
+  github_token:
+    required: true
+  check_name:
+    required: true
+    default: "BackstopJS visual test"
+  approve_comment:
+    required: true
+    default: "backstop-check approve"
+runs:
+  using: "node16"
+  main: "dist/index.js"
