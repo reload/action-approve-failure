@@ -16,7 +16,7 @@
     "@actions/github": "^5.0.0"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.5.0",
+    "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.5.0",
     "@vercel/ncc": "^0.33.0",
     "eslint": "^8.4.0",
