@@ -10,6 +10,13 @@
     "build": "ncc build src/index.ts --license licenses.txt"
   },
   "author": "Lasse Borly <lasse@reload.dk>",
+  "maintainers": [
+    {
+      "name": "Pernille ",
+      "email": "pernille@reload.dk",
+      "url": "https://github.com/PELN"
+    }
+  ],
   "private": "true",
   "dependencies": {
     "@actions/core": "^1.6.0",
