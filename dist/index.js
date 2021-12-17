@@ -8350,7 +8350,7 @@ function run() {
                 const checkNames = checks.data.check_runs
                     .map((check) => check.name)
                     .join(", ");
-                core.setFailed(`Could not find a check with the name: ${checkName}. Possible names are: [${checkNames}]`);
+                core.setFailed(`Could not find a check with the name: ${checkName}. Possible names: [${checkNames}]`);
                 return;
             }
             yield octokit.rest.checks.update({
