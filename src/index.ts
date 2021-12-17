@@ -52,7 +52,7 @@ async function run() {
         .map((check) => check.name)
         .join(", ");
       core.setFailed(
-        `Could not find a check with the name: ${checkName}. Possible names are: [${checkNames}]`
+        `Could not find a check with the name: ${checkName}. Possible names: [${checkNames}]`
       );
       return;
     }
