@@ -1,6 +1,6 @@
 {
   "name": "action-approve-failure",
-  "version": "0.0.1",
+  "version": "latest",
   "main": "dist/index.js",
   "engines": {
     "node": "~16",
