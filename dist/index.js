@@ -8321,19 +8321,19 @@ function run() {
             const shouldRun = (comment === null || comment === void 0 ? void 0 : comment.body) === approveCommand;
             if (!shouldRun)
                 return;
-            const octokit = github.getOctokit(token);
             const repository = payload.repository;
             if (!repository) {
                 core.setFailed("Could not find repository.");
                 return;
             }
-            const repo = repository.name;
-            const owner = repository.owner.login;
             const pull_number = (_a = payload.issue) === null || _a === void 0 ? void 0 : _a.number;
             if (!pull_number) {
                 core.setFailed("Could not find issue/pull request.");
                 return;
             }
+            const repo = repository.name;
+            const owner = repository.owner.login;
+            const octokit = github.getOctokit(token);
             const pull = yield octokit.rest.pulls.get({
                 owner,
                 repo,
