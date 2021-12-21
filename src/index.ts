@@ -1,13 +1,17 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 
+type Octokit = ReturnType<typeof github.getOctokit>
+
 async function run() {
   try {
     const payload = github.context.payload;
     const comment = payload.comment;
+    const sender = payload.sender?.login;
     const token = core.getInput("github_token");
-    const checkName = core.getInput("check_name");
+    const name = core.getInput("name");
     const approveCommand = core.getInput("approve_comment");
+    const type = core.getInput("type");
 
     const shouldRun = comment?.body === approveCommand;
     if (!shouldRun) return;
@@ -31,47 +35,102 @@ async function run() {
     }
 
     const pull = await octokit.rest.pulls.get({
-      owner,
-      repo,
-      pull_number,
+      owner: owner,
+      repo: repo,
+      pull_number: pull_number,
     });
     const ref = pull.data.head.ref;
+    const sha = pull.data.head.sha;
 
-    const checks = await octokit.rest.checks.listForRef({
-      owner,
-      repo,
-      ref,
-    });
+    switch(type) {
+      case "status":
+        runStatus(octokit, name, owner, repo, ref, sha, sender)
+        break;
 
-    const check_run_id = checks.data.check_runs.find(
-      (check) => check.name === checkName
-    )?.id;
+      case "check":
+        runCheck(octokit, name, owner, repo, ref)
+        break;
 
-    if (!check_run_id) {
-      const checkNames = checks.data.check_runs
-        .map((check) => check.name)
-        .join(", ");
-      core.setFailed(
-        `Could not find a check with the name: ${checkName}. Possible names: [${checkNames}]`
-      );
-      return;
+      default:
+        throw new Error("Unknown type");
+        break;
     }
 
-    await octokit.rest.checks.update({
-      owner,
-      repo,
-      check_run_id,
-      conclusion: "success",
-    });
-
-    core.notice(`${checkName} was marked as successful!`);
   } catch (error) {
     let message = "Something went wrong";
+
     if (error instanceof Error) {
       message = error.message;
     }
+
     core.setFailed(message);
   }
+}
+
+async function runStatus(octokit: Octokit, contextName: string, owner: string, repo: string, ref: string, sha: string, sender: string) {
+  const statuses = await octokit.rest.repos.listCommitStatusesForRef({
+    owner,
+    repo,
+    ref,
+  });
+
+  const status_id = statuses.data.find(
+    (status) => status.context === contextName
+  )?.id;
+
+  if (!status_id) {
+    const statusContexts = statuses.data
+      .map((status) => status.context)
+      .join(", ");
+    core.setFailed(
+      `Could not find a status with the context: ${contextName}. Possible contexts: [${statusContexts}]`
+    );
+
+    return;
+  }
+
+  await octokit.rest.repos.createCommitStatus({
+    owner: owner,
+    repo: repo,
+    sha: sha,
+    state: "success",
+    description: `Approved by ${sender}`,
+    context: contextName,
+  });
+
+  core.notice(`${contextName} was marked as successful!`);
+}
+
+async function runCheck(octokit: Octokit, checkName: string, owner: string, repo: string, ref: string) {
+  const checks = await octokit.rest.checks.listForRef({
+    owner: owner,
+    repo: repo,
+    ref: ref,
+  });
+
+  const check_run_id = checks.data.check_runs.find(
+    (check) => check.name === checkName
+  )?.id;
+
+  if (!check_run_id) {
+    const checkNames = checks.data.check_runs
+      .map((check) => check.name)
+      .join(", ");
+    core.setFailed(
+      `Could not find a check with the name: ${checkName}. Possible names: [${checkNames}]`
+    );
+
+    return;
+  }
+
+  await octokit.rest.checks.update({
+    owner,
+    repo,
+    check_run_id,
+    conclusion: "success",
+  });
+
+  core.notice(`${checkName} was marked as successful!`);
 }
 
 run();
