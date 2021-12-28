@@ -8315,9 +8315,11 @@ function run() {
         try {
             const payload = github.context.payload;
             const comment = payload.comment;
+            const sender = (_a = payload.sender) === null || _a === void 0 ? void 0 : _a.login;
             const token = core.getInput("github_token");
-            const checkName = core.getInput("check_name");
+            const name = core.getInput("name");
             const approveCommand = core.getInput("approve_comment");
+            const type = core.getInput("type");
             const shouldRun = (comment === null || comment === void 0 ? void 0 : comment.body) === approveCommand;
             if (!shouldRun)
                 return;
@@ -8329,37 +8331,29 @@ function run() {
             }
             const repo = repository.name;
             const owner = repository.owner.login;
-            const pull_number = (_a = payload.issue) === null || _a === void 0 ? void 0 : _a.number;
+            const pull_number = (_b = payload.issue) === null || _b === void 0 ? void 0 : _b.number;
             if (!pull_number) {
                 core.setFailed("Could not find issue/pull request.");
                 return;
             }
             const pull = yield octokit.rest.pulls.get({
-                owner,
-                repo,
-                pull_number,
+                owner: owner,
+                repo: repo,
+                pull_number: pull_number,
             });
             const ref = pull.data.head.ref;
-            const checks = yield octokit.rest.checks.listForRef({
-                owner,
-                repo,
-                ref,
-            });
-            const check_run_id = (_b = checks.data.check_runs.find((check) => check.name === checkName)) === null || _b === void 0 ? void 0 : _b.id;
-            if (!check_run_id) {
-                const checkNames = checks.data.check_runs
-                    .map((check) => check.name)
-                    .join(", ");
-                core.setFailed(`Could not find a check with the name: ${checkName}. Possible names are: [${checkNames}]`);
-                return;
+            const sha = pull.data.head.sha;
+            switch (type) {
+                case "status":
+                    runStatus(octokit, name, owner, repo, ref, sha, sender);
+                    break;
+                case "check":
+                    runCheck(octokit, name, owner, repo, ref);
+                    break;
+                default:
+                    throw new Error("Unknown type");
+                    break;
             }
-            yield octokit.rest.checks.update({
-                owner,
-                repo,
-                check_run_id,
-                conclusion: "success",
-            });
-            core.notice(`${checkName} was marked as successful!`);
         }
         catch (error) {
             let message = "Something went wrong";
@@ -8368,6 +8362,58 @@ function run() {
             }
             core.setFailed(message);
         }
+    });
+}
+function runStatus(octokit, contextName, owner, repo, ref, sha, sender) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        const statuses = yield octokit.rest.repos.listCommitStatusesForRef({
+            owner,
+            repo,
+            ref,
+        });
+        const status_id = (_a = statuses.data.find((status) => status.context === contextName)) === null || _a === void 0 ? void 0 : _a.id;
+        if (!status_id) {
+            const statusContexts = statuses.data
+                .map((status) => status.context)
+                .join(", ");
+            core.setFailed(`Could not find a status with the context: ${contextName}. Possible contexts: [${statusContexts}]`);
+            return;
+        }
+        yield octokit.rest.repos.createCommitStatus({
+            owner: owner,
+            repo: repo,
+            sha: sha,
+            state: "success",
+            description: `Approved by ${sender}`,
+            context: contextName,
+        });
+        core.notice(`${contextName} was marked as successful!`);
+    });
+}
+function runCheck(octokit, checkName, owner, repo, ref) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        const checks = yield octokit.rest.checks.listForRef({
+            owner: owner,
+            repo: repo,
+            ref: ref,
+        });
+        const check_run_id = (_a = checks.data.check_runs.find((check) => check.name === checkName)) === null || _a === void 0 ? void 0 : _a.id;
+        if (!check_run_id) {
+            const checkNames = checks.data.check_runs
+                .map((check) => check.name)
+                .join(", ");
+            core.setFailed(`Could not find a check with the name: ${checkName}. Possible names: [${checkNames}]`);
+            return;
+        }
+        yield octokit.rest.checks.update({
+            owner,
+            repo,
+            check_run_id,
+            conclusion: "success",
+        });
+        core.notice(`${checkName} was marked as successful!`);
     });
 }
 run();

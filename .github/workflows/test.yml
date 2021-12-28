@@ -20,6 +20,7 @@ jobs:
         name: Approve BackstopJS
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          type: check
           check_name: BackstopJS visual test
           approve_comment: backstop-check approve
 
@@ -35,5 +36,6 @@ jobs:
         name: Approve Cypress
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          type: check
           check_name: Cypress
           approve_comment: cypress-check approve

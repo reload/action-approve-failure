@@ -3,9 +3,12 @@ description: "Approve any check no matter it's actual conclusion."
 inputs:
   github_token:
     required: true
-  check_name:
+  type:
     required: true
-    default: "BackstopJS visual test"
+    default: "status"
+  name:
+    required: true
+    default: "Visual regression test"
   approve_comment:
     required: true
     default: "backstop-check approve"
