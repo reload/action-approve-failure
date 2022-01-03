@@ -8365,15 +8365,14 @@ function run() {
     });
 }
 function runStatus(octokit, contextName, owner, repo, ref, sha, sender) {
-    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const statuses = yield octokit.rest.repos.listCommitStatusesForRef({
             owner,
             repo,
             ref,
         });
-        const status_id = (_a = statuses.data.find((status) => status.context === contextName)) === null || _a === void 0 ? void 0 : _a.id;
-        if (!status_id) {
+        const existingStatus = statuses.data.find((status) => status.context === contextName);
+        if (!existingStatus) {
             const statusContexts = statuses.data
                 .map((status) => status.context)
                 .join(", ");
@@ -8385,8 +8384,9 @@ function runStatus(octokit, contextName, owner, repo, ref, sha, sender) {
             repo: repo,
             sha: sha,
             state: "success",
-            description: `Approved by ${sender}`,
+            description: `${existingStatus.description} — approved by ${sender}`,
             context: contextName,
+            target_url: existingStatus.target_url,
         });
         core.notice(`${contextName} was marked as successful!`);
     });
