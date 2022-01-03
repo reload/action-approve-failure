@@ -52,18 +52,20 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: reload/action-approve-failure@1.0.0
+      - uses: reload/action-approve-failure@main
         name: Approve BackstopJS
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          check_name: BackstopJS visual test
+          github_token: ${{ github.token }}
+          type: status
+          name: BackstopJS visual test
           approve_comment: backstop-check approve
 
-      - uses: reload/action-approve-failure@1.0.0
+      - uses: reload/action-approve-failure@main
         name: Approve ESLint
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          check_name: ESLint
+          github_token: ${{ github.token }}
+          type: check
+          name: ESLint
           approve_comment: eslint-check approve
 ```
 
