@@ -74,11 +74,11 @@ async function runStatus(octokit: Octokit, contextName: string, owner: string, r
     ref,
   });
 
-  const status_id = statuses.data.find(
+  const existingStatus = statuses.data.find(
     (status) => status.context === contextName
-  )?.id;
+  );
 
-  if (!status_id) {
+  if (!existingStatus) {
     const statusContexts = statuses.data
       .map((status) => status.context)
       .join(", ");
@@ -94,8 +94,9 @@ async function runStatus(octokit: Octokit, contextName: string, owner: string, r
     repo: repo,
     sha: sha,
     state: "success",
-    description: `Approved by ${sender}`,
+    description: `${existingStatus.description} — approved by ${sender}`,
     context: contextName,
+    target_url: existingStatus.target_url,
   });
 
   core.notice(`${contextName} was marked as successful!`);
