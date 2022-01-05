@@ -8320,7 +8320,7 @@ function run() {
             const name = core.getInput("name");
             const approveCommand = core.getInput("approve_comment");
             const type = core.getInput("type");
-            const shouldRun = (comment === null || comment === void 0 ? void 0 : comment.body) === approveCommand;
+            const shouldRun = comment === null || comment === void 0 ? void 0 : comment.body.includes(approveCommand);
             if (!shouldRun)
                 return;
             const octokit = github.getOctokit(token);
