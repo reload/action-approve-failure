@@ -13,7 +13,7 @@ async function run() {
     const approveCommand = core.getInput("approve_comment");
     const type = core.getInput("type");
 
-    const shouldRun = comment?.body === approveCommand;
+    const shouldRun = comment?.body.includes(approveCommand);
     if (!shouldRun) return;
 
     const octokit = github.getOctokit(token);
