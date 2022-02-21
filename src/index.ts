@@ -94,7 +94,7 @@ async function runStatus(octokit: Octokit, contextName: string, owner: string, r
     repo: repo,
     sha: sha,
     state: "success",
-    description: `${existingStatus.description} — approved by ${sender}`,
+    description: `${existingStatus.description} — approved by @${sender}`,
     context: contextName,
     target_url: existingStatus.target_url,
   });
