@@ -8384,7 +8384,7 @@ function runStatus(octokit, contextName, owner, repo, ref, sha, sender) {
             repo: repo,
             sha: sha,
             state: "success",
-            description: `${existingStatus.description} — approved by ${sender}`,
+            description: `${existingStatus.description} — approved by @${sender}`,
             context: contextName,
             target_url: existingStatus.target_url,
         });
