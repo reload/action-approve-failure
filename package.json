@@ -3,8 +3,8 @@
   "version": "latest",
   "main": "dist/index.js",
   "engines": {
-    "node": "~16",
-    "npm": "~8"
+    "node": "~20",
+    "npm": "~10"
   },
   "scripts": {
     "build": "ncc build src/index.ts --license licenses.txt"
@@ -12,9 +12,9 @@
   "author": "Lasse Borly <lasse@reload.dk>",
   "maintainers": [
     {
-      "name": "Pernille ",
-      "email": "pernille@reload.dk",
-      "url": "https://github.com/PELN"
+      "name": "Reload Developers",
+      "email": "developers@reload.dk",
+      "url": "https://github.com/reload"
     }
   ],
   "private": "true",
