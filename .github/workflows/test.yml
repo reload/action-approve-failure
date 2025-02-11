@@ -12,7 +12,7 @@ jobs:
     # This condition is important since you want to prevent all of the steps
     # from running as early as possible if the comment isn't in a PR.
     if: ${{ github.event.issue.pull_request }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
