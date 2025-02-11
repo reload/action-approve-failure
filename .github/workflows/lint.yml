@@ -8,18 +8,18 @@ on:
 
 jobs:
   eslint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "16"
+          node-version: "20"
       - run: npm install
       - run: npm exec eslint
 
   markdownlint:
     name: markdown
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Check out code
