@@ -2,6 +2,7 @@
   "name": "action-approve-failure",
   "version": "latest",
   "main": "dist/index.js",
+  "type": "module",
   "engines": {
     "node": "~20",
     "npm": "~10"
@@ -25,11 +26,11 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
     "@eslint/js": "^10.0.1",
-    "@typescript-eslint/eslint-plugin": "^8.57.0",
-    "@typescript-eslint/parser": "^8.59.1",
+    "@typescript-eslint/eslint-plugin": "^8.59.3",
+    "@typescript-eslint/parser": "^8.59.3",
     "@vercel/ncc": "^0.38.4",
     "eslint": "^10.2.1",
     "globals": "^17.5.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   }
 }
