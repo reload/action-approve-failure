@@ -28,7 +28,7 @@
     "@eslint/js": "^10.0.1",
     "@typescript-eslint/eslint-plugin": "^8.59.3",
     "@typescript-eslint/parser": "^8.60.0",
-    "@vercel/ncc": "^0.38.4",
+    "@vercel/ncc": "^0.44.1",
     "eslint": "^10.4.1",
     "globals": "^17.5.0",
     "typescript": "^6.0.3"
